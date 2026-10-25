@@ -1,0 +1,51 @@
+<!-- SO-101 on a table with a cup to fetch and a hand to give it to.
+     World frame = Viam world frame: arm base at the origin, +x forward, z up, meters.
+     The hand sits behind and to the left of the arm (shoulder_pan about -100 deg; the pan limit is 110),
+     about as far back as the SO-101's +/-110 deg pan can reach. -->
+<mujoco model="so101 cup handover">
+  <include file="menagerie/robotstudio_so101/so101.xml"/>
+  <!-- after the include so it wins over so101.xml's meshdir="assets" -->
+  <compiler meshdir="menagerie/robotstudio_so101/assets"/>
+
+  <visual>
+    <headlight diffuse="0.6 0.6 0.6" ambient="0.3 0.3 0.3" specular="0 0 0"/>
+    <global offwidth="1280" offheight="960"/>
+  </visual>
+
+  <asset>
+    <texture type="skybox" builtin="gradient" rgb1="0.75 0.8 0.85" rgb2="0.35 0.4 0.45" width="512" height="3072"/>
+    <texture type="2d" name="wood" builtin="flat" rgb1="0.62 0.47 0.32" width="64" height="64"/>
+    <material name="table" texture="wood" reflectance="0.05"/>
+    <material name="skin" rgba="0.87 0.67 0.55 1"/>
+    <material name="sleeve" rgba="0.2 0.3 0.55 1"/>
+  </asset>
+
+  <worldbody>
+    <light pos="0.2 0 1.2" dir="0 0 -1" directional="true"/>
+    <geom name="table" type="plane" size="0.6 0.6 0.05" material="table"/>
+
+    <!-- 40 mm x 80 mm cup, solid, 50 g, red band round the middle like the real one -->
+    <body name="cup" pos="0.41 -0.07 0.04">
+      <freejoint name="cup"/>
+      <geom name="cup" type="cylinder" size="0.02 0.04" mass="0.05" rgba="0.95 0.95 0.97 1"
+        friction="1.5 0.01 0.001" condim="4" solref="0.01 1"/>
+      <geom name="cup_band" type="cylinder" size="0.0205 0.008" pos="0 0 0.01" rgba="0.85 0.1 0.15 1"
+        contype="0" conaffinity="0" mass="0"/>
+    </body>
+
+    <!-- the human: an open palm (collides, so a released cup rests on it) and a forearm (visual) -->
+    <body name="hand" pos="-0.0016 0.3074 0.09" euler="0 0 1.7017">
+      <geom name="palm" type="box" size="0.045 0.035 0.006" material="skin" friction="1.5 0.01 0.001"/>
+      <geom name="thumb" type="capsule" fromto="0.0 0.038 0.004 0.03 0.05 0.02" size="0.007" material="skin"/>
+      <geom name="forearm" type="capsule" fromto="0.05 0 -0.01 0.28 0 -0.08" size="0.028" material="sleeve"
+        contype="0" conaffinity="0"/>
+      <site name="handover" pos="0 0 0.05" size="0.005" rgba="0 1 0 0.5"/>
+    </body>
+
+    <body name="focus" pos="0.2 0.1 0.05"/>
+    <!-- overhead, image up = +x (forward) -->
+    <camera name="top" pos="0.12 0.05 0.75" xyaxes="0 -1 0 1 0 0" fovy="55"/>
+    <!-- scene view from the front-right -->
+    <camera name="front" pos="0.8 -0.4 0.6" mode="targetbody" target="focus" fovy="55"/>
+  </worldbody>
+</mujoco>

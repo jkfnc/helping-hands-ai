@@ -1,0 +1,25 @@
+# secrets: API keys live in .env (never committed)
+.env
+*.env
+viam*.json
+!mujoco-sim/kinematics/*.json
+!mujoco-sim/dream/so101_arm.json
+
+# environments, downloads, model caches
+.venv/
+venv/
+voice-loop/whisper-local/
+mujoco-sim/menagerie/
+__pycache__/
+*.pyc
+
+# Dream Labs' SO-101 URDF ships with the dreamlabs package (copy step in README)
+mujoco-sim/dream/so101_right.urdf
+
+# recordings, videos, logs
+mujoco-sim/demo_rec/
+mujoco-sim/demo_rec_gemini/
+*.mp4
+*.log
+MUJOCO_LOG.TXT
+.DS_Store
